@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  panamax-mirror:
+    build: docker
+    container_name: panamax-mirror-build
+    volumes:
+      - panamax_data:/data
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  panamax_data:
