@@ -25,6 +25,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
 
+    - name: Set up Buildx
+      uses: docker/setup-buildx-action@v3
+
     - name: Determine image tags
       id: meta
       uses: docker/metadata-action@v5
