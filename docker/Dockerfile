@@ -1,5 +1,5 @@
 # Use an official Rust image as a base
-FROM rust:1.81-slim as builder
+FROM rust:1.81-slim AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
@@ -18,18 +18,20 @@ RUN cargo install --path . --root /usr/local
 
 FROM debian:stable-slim
 
+VOLUME /data
+WORKDIR /data
+
 # Install runtime dependencies (ca-certificates for HTTPS, supervisor for process management)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libssl-dev \
     supervisor \
     cron \
-    && rm -rf /var/lib/apt/lists/*
+    git && \
+    git config --global --add safe.directory '/data' && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/bin/panamax /usr/local/bin/panamax
-
-VOLUME /data
-WORKDIR /data
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
